@@ -1,0 +1,30 @@
+version: '2.29.2'
+
+services:
+  python:
+    build: ./python
+    image: test_mysql/py
+    command: python main.py
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - mysql
+    networks:
+      - mynetwork
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=mysql_db
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
