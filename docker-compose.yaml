@@ -1,29 +1,29 @@
-version: '2.29.2'
-
 services:
-  python:
-    build: ./python
-    image: test_mysql/py
-    command: python main.py
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=1
-    depends_on:
-      - mysql
-    networks:
-      - mynetwork
-
-  mysql:
+  db:
+    container_name: mysql-cont
     image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
     ports:
       - 3306:3306
     volumes:
-      - ./mysql:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=1234
-      - MYSQL_DATABASE=mysql_db
+      - db-data:/var/lib/mysql
     networks:
       - mynetwork
+
+  python:
+    container_name: python-cont
+    build: ./python
+    image: compose_mysql/python:1
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+
+
+volumes:
+  db-data:
 
 networks:
   mynetwork:
